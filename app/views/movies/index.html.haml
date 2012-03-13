@@ -3,23 +3,22 @@
 
 = form_tag movies_path, :method => :get do
   Include: 
-  - @all_ratings.each do |rating|
+  - @all_ratings.each_pair do |rating,check|
     = rating
-    = check_box_tag "ratings[#{rating}]"
-  = submit_tag 'Refresh'
-
+    = check_box_tag "ratings[#{rating}]", "2", check
+  = submit_tag 'Refresh', :id => 'ratings_submit'
 %table#movies
   %thead
     %tr
       - if @hilitetitle == true
-        %th.hilite=link_to 'Movie Title', movies_path(:sort => "title"), :id => "title_header"
+        %th.hilite=link_to 'Movie Title', movies_path(:sort => "title", :ratings => @checked), :id => "title_header"
       - else
-        %th=link_to 'Movie Title', movies_path(:sort => "title"), :id => "title_header"
+        %th=link_to 'Movie Title', movies_path(:sort => "title", :ratings=>@checked), :id => "title_header"
       %th Rating
       - if @hilitetitle == false
-        %th.hilite= link_to 'Release Date', movies_path(:sort => "release_date"), :id =>"release_date_header"
+        %th.hilite= link_to 'Release Date', movies_path(:sort => "release_date", :ratings=>@checked), :id =>"release_date_header"
       -else
-        %th= link_to 'Release Date', movies_path(:sort => "release_date"), :id =>"release_date_header"
+        %th= link_to 'Release Date', movies_path(:sort => "release_date", :ratings=>@checked), :id =>"release_date_header"
       %th More Info
   %tbody
     - @movies.each do |movie|

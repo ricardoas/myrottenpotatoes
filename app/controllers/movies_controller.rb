@@ -7,17 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @all_ratings=Movie.all_ratings
-    if ! (keys = params[:ratings]).nil?
-      condition = ["rating IN (?)", keys.keys]
+    @all_ratings=Hash.new
+    @checked=params[:ratings]
+    Movie.all_ratings.each {|rating| @all_ratings[rating]=false }
+    if ! @checked.nil?
+      condition = ["rating IN (?)", @checked.keys]
+      @all_ratings.merge!(@checked) {|key, oldval, newval| true}
     else
       condition = []
     end
     if params[:sort] == "title"
-      @movies = Movie.all :order => "title ASC"
+      @movies = Movie.all :order => "title ASC", :conditions => condition
       @hilitetitle=true
     elsif params[:sort] == "release_date"
-      @movies = Movie.all :order => "release_date ASC"
+      @movies = Movie.all :order => "release_date ASC", :conditions => condition
       @hilitetitle=false
     else
       @movies = Movie.all :conditions => condition
