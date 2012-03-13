@@ -7,15 +7,20 @@ class MoviesController < ApplicationController
   end
 
   def index
+    @all_ratings=Movie.all_ratings
+    if ! (keys = params[:ratings]).nil?
+      condition = ["rating IN (?)", keys.keys]
+    else
+      condition = []
+    end
     if params[:sort] == "title"
       @movies = Movie.all :order => "title ASC"
       @hilitetitle=true
     elsif params[:sort] == "release_date"
       @movies = Movie.all :order => "release_date ASC"
       @hilitetitle=false
-    elsif params[:sort] == "release_date"
     else
-      @movies = Movie.all
+      @movies = Movie.all :conditions => condition
     end
   end
 
